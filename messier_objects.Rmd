@@ -36,7 +36,7 @@ mess_table <-
   mess_table %>% 
   select(-c(Picture, `Distance (kly)`, `Right Ascension`, Declination)) %>% 
   filter(!`Messier number` == "Messier number") %>% 
-  add_column("Viewed" = "") %>% 
+  add_column("Viewed" = "\\rule{1cm}{0.4pt}") %>% 
   rename(Messier = `Messier number`, `NGC/IC` = `NGC/IC Number`, Mag = `Apparent magnitude`) %>% 
   mutate(Messier = str_extract(Messier, "M[0-9]+")) 
 ```
@@ -44,11 +44,11 @@ mess_table <-
 ```{r}
 kable(mess_table, 
       booktabs = TRUE, 
-      longtable = TRUE) %>% 
+      longtable = TRUE,
+      escape = FALSE) %>% 
   kable_styling(latex_options = c("striped", "repeat_header")) %>% 
   column_spec(2, width = "2cm") %>% 
   column_spec(3, width = "3cm") %>% 
   column_spec(4, width = "3cm") %>% 
   column_spec(5, width = "2.5cm")
-
 ```
