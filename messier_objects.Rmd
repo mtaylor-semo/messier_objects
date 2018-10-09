@@ -1,6 +1,8 @@
 ---
 title: "List of Messier Objects"
-output: pdf_document
+output: 
+  pdf_document:
+    latex_engine: lualatex
 ---
 
 ```{r setup, include=FALSE}
@@ -10,6 +12,8 @@ knitr::opts_chunk$set(echo = FALSE)
 ```{r echo=FALSE, message=FALSE}
 library(rvest)
 library(tidyverse)
+library(rmarkdown)
+options(knitr.table.format = "latex")
 library(knitr)
 library(kableExtra)
 
@@ -33,7 +37,7 @@ mess_table <-
   select(-c(Picture, `Distance (kly)`, `Right Ascension`, Declination)) %>% 
   filter(!`Messier number` == "Messier number") %>% 
   add_column("Viewed" = "") %>% 
-  rename(Number = `Messier number`, `NGC/IC` = `NGC/IC Number`, Magnitude = `Apparent magnitude`)
+  rename(Number = `Messier number`, `NGC/IC` = `NGC/IC Number`, Mag = `Apparent magnitude`)
 
 ## Split the Object type into two categories for
 ## sorting by object rather than Messier number, then
@@ -45,9 +49,14 @@ mess_table <- mess_table %>%
   mutate(Number = str_extract(Number, "M[0-9]+")) 
 ```
 
-```{r echo=FALSE}
-kable(mess_table) %>% 
-  kable_styling(full_width = F) %>% 
-  column_spec(2, width = "1in") %>% 
-  column_spec(3, width = "10em")
+```{r}
+kable(mess_table, 
+      booktabs = TRUE, 
+      longtable = TRUE) %>% 
+  kable_styling(latex_options = c("striped", "repeat_header")) %>% 
+  column_spec(2, width = "2cm") %>% 
+  column_spec(3, width = "3cm") %>% 
+  column_spec(4, width = "3cm") %>% 
+  column_spec(5, width = "2.5cm")
+
 ```
