@@ -1,3 +1,8 @@
+---
+  title: "List of Messier Objects"
+  output: pdf_document
+---
+  
 library(rvest)
 library(tidyverse)
 
@@ -14,20 +19,21 @@ mess_table <-
   .[[1]]
 
 ## Remove unneeded columns and
-## delete last row that repeats column headers
+## delete last row that repeats column headers, then
+## add a blank column to mark whether the object was viewed.
 mess_table <- 
   mess_table %>% 
-  select(-c(Picture, `Right Ascension`, Declination)) %>% 
-  filter(!`Messier number` == "Messier number")
-
+  select(-c(Picture, `Distance (kly)`, `Right Ascension`, Declination)) %>% 
+  filter(!`Messier number` == "Messier number") %>% 
+  add_column("Viewed" = "")
 
 ## Split the Object type into two categories for
 ## sorting by object rather than Messier number, then
 ## Remove the Wiki footnotes in brackets after
 ## the Messier numbers in the first column
-mess_table1 <- mess_table %>% 
+mess_table <- mess_table %>% 
   separate(`Object type`,
-           into = c('object_type','subtype'), sep = ",") %>% 
-  separate(`Messier number`, into = "mess_num", sep = "\\[", extra = "drop")
+           into = c('object_type','subtype'), sep = ",", fill = "right") %>%   
+  mutate(`Messier number` = str_extract(`Messier number`, "M[0-9]+")) 
 
-mess_table1 <- mess_table %>% mutate(`Messier number` = str_extract(`Messier number`, "M[0-9]+"))
+
