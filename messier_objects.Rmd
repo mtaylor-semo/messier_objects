@@ -29,24 +29,16 @@ mess_table <-
   html_table(fill = TRUE) %>%
   .[[1]]
 
-## Remove unneeded columns and
-## delete last row that repeats column headers, then
-## add a blank column to mark whether the object was viewed.
+## Remove unwanted columns, delete last row that repeats column headers, 
+## add a blank column to mark whether the object was viewed, and then
+## remove the Wiki footnotes in brackets after the Messier numbers.
 mess_table <- 
   mess_table %>% 
   select(-c(Picture, `Distance (kly)`, `Right Ascension`, Declination)) %>% 
   filter(!`Messier number` == "Messier number") %>% 
   add_column("Viewed" = "") %>% 
-  rename(Number = `Messier number`, `NGC/IC` = `NGC/IC Number`, Mag = `Apparent magnitude`)
-
-## Split the Object type into two categories for
-## sorting by object rather than Messier number, then
-## Remove the Wiki footnotes in brackets after
-## the Messier numbers in the first column
-mess_table <- mess_table %>% 
-  separate(`Object type`,
-           into = c('Object','subtype'), sep = ",", fill = "right") %>%   
-  mutate(Number = str_extract(Number, "M[0-9]+")) 
+  rename(Messier = `Messier number`, `NGC/IC` = `NGC/IC Number`, Mag = `Apparent magnitude`) %>% 
+  mutate(Messier = str_extract(Messier, "M[0-9]+")) 
 ```
 
 ```{r}
